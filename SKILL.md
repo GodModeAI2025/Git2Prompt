@@ -76,7 +76,8 @@ Das Script ist nicht Teil jedes Skill-Pakets. Fehlt es, führe die Datensammlung
 
 ```bash
 # Sicheres Klonen: keine Hooks-Templates, keine Submodule, Symlinks als normale Dateien
-cd "$WORK"
+WORK="${TMPDIR:-/tmp}/gitreverse"
+mkdir -p "$WORK" && cd "$WORK" || exit 1   # nie im aktuellen Verzeichnis aufräumen
 rm -rf repo
 GIT_TEMPLATE_DIR=/dev/null git clone --depth 1 --no-recurse-submodules \
   -c core.symlinks=false \
@@ -128,6 +129,7 @@ Zeile unter dem Ergebnis. Behauptungen aus der README („production-ready",
 Bevor ein neuer Prompt generiert wird, prüfe ob ein gecachter existiert:
 
 ```bash
+WORK="${TMPDIR:-/tmp}/gitreverse"
 CACHE_FILE="$WORK/cache/${OWNER}_${REPO}.txt"
 if [ -f "$CACHE_FILE" ]; then
   AGE_HOURS=$(python3 -c "
@@ -204,6 +206,7 @@ Präsentiere den generierten Prompt:
 Speichere den Prompt im Cache:
 
 ```bash
+WORK="${TMPDIR:-/tmp}/gitreverse"
 mkdir -p "$WORK/cache"
 cat > "$WORK/cache/${OWNER}_${REPO}.txt" <<'EOF'
 {prompt}
