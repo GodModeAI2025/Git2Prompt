@@ -63,7 +63,7 @@ Die Ausgabe ist ein einzelner, synthetischer User-Prompt:
 - Bei Clone-Fallback: sichere Git-Template-Einstellungen (`GIT_TEMPLATE_DIR=/dev/null`)
 - Clone mit `core.symlinks=false`; Symlinks werden nie gelesen (kein Abfluss lokaler Dateien über präparierte Links)
 - README und Dateinamen fremder Repos gelten als Daten: eingebettete Anweisungen werden ignoriert, keine Befehle aus dem Repo ausgeführt
-- Unsichtbare Zeichen (Nullbreitenzeichen, Bidi-Steuerzeichen, Unicode-Tag-Zeichen) werden aus der README entfernt und landen nicht im erzeugten Prompt, der ja in ein anderes Coding-Tool eingefügt wird
+- Unsichtbare Zeichen (Nullbreitenzeichen, Bidi-Steuerzeichen, Unicode-Tag-Zeichen) werden aus der README entfernt und landen nicht im erzeugten Prompt, der ja in ein anderes Coding-Tool eingefügt wird. Zeichen mit Schriftfunktion (ZWJ/ZWNJ in Emoji und nichtlateinischen Schriften, Leserichtungsmarken, Variationsselektoren) bleiben stehen; eine auffällige Kette daraus wird gemeldet
 - Quellenangabe mit Commit-SHA des analysierten Stands
 
 ## Fehlerbehandlung
