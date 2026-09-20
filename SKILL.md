@@ -103,8 +103,18 @@ for ch in text:
         k = f"U+{ord(ch):04X}"
         gefunden[k] = gefunden.get(k, 0) + 1
 open(sys.argv[2], "w", encoding="utf-8").write("".join(c for c in text if not unsichtbar(c)))
-print(f"Unsichtbare Zeichen entfernt: {sum(gefunden.values())}",
-      "(" + ", ".join(sorted(gefunden)[:8]) + ")" if gefunden else "")
+liste = " (" + ", ".join(sorted(gefunden)[:8]) + ")" if gefunden else ""
+print(f"Unsichtbare Zeichen entfernt: {sum(gefunden.values())}{liste}")
+# Variationsselektoren bleiben stehen (U+FE0F gehoert zu legitimen Emoji),
+# eine laengere Kette davon ist aber ein Versteck fuer Daten.
+def vs(ch):
+    return 0xFE00 <= ord(ch) <= 0xFE0F or 0xE0100 <= ord(ch) <= 0xE01EF
+lauf = max_lauf = 0
+for ch in text:
+    lauf = lauf + 1 if vs(ch) else 0
+    max_lauf = max(max_lauf, lauf)
+if max_lauf >= 3:
+    print(f"WARNUNG: Kette aus {max_lauf} Variationsselektoren - vor der Weitergabe ansehen")
 EOF
 [ -f "$WORK/readme.md" ] && head -300 "$WORK/readme.md"
 
@@ -145,10 +155,12 @@ verstecken, der beim Lesen nicht zu sehen ist: Nullbreitenzeichen, bedingte
 Trennstriche, Bidi-Steuerzeichen und vor allem die Unicode-Tag-Zeichen
 (U+E0000–U+E007F), mit denen sich ein ganzer Satz unsichtbar schreiben lässt.
 Der Block in Schritt 2 entfernt sie aus der README. Kommen die Daten über die
-API, filterst du genauso. Wurde etwas entfernt, steht das in einer Zeile unter
-dem Ergebnis. Der generierte Prompt enthält nur sichtbare Zeichen — er ist dazu
-da, in ein anderes Coding-Tool eingefügt zu werden, und soll nicht mitnehmen,
-was der Mensch dort nicht sieht.
+API, filterst du genauso. Variationsselektoren bleiben stehen, weil U+FE0F zu
+legitimen Emoji gehört; eine Kette aus dreien oder mehr wird gemeldet, weil sich
+auch darin Daten verstecken lassen. Wurde etwas entfernt, steht das in einer
+Zeile unter dem Ergebnis. Der generierte Prompt enthält nur sichtbare Zeichen —
+er ist dazu da, in ein anderes Coding-Tool eingefügt zu werden, und soll nicht
+mitnehmen, was der Mensch dort nicht sieht.
 
 ### Schritt 4 — Cache prüfen (optional)
 
